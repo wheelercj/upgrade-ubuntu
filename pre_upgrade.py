@@ -46,20 +46,6 @@ def main():
     srcs_list: Path = Path("/etc/apt/sources.list")
     srcs_list_d: Path = Path("/etc/apt/sources.list.d/")
 
-    src_repos: list[str] = []
-    srcs_contents: str = srcs_list.read_text(encoding="utf8")
-    for line in srcs_contents.splitlines():
-        if line.startswith("deb"):
-            src_repos.append(line)
-    for path in srcs_list_d.iterdir():
-        if path.is_file():
-            contents: str = path.read_text(encoding="utf8")
-            for line in contents.splitlines():
-                if line.startswith("deb"):
-                    src_repos.append(line)
-    src_repos = sorted(set(src_repos))
-    print(f"Found {len(src_repos)} source repositories")
-
     print("Updating sources files")
     update_sources_file(srcs_list, version_name, new_version_name)
     for path in srcs_list_d.iterdir():
