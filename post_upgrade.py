@@ -14,7 +14,7 @@ today: str = f"{now.year}-{str(now.month).zfill(2)}-{str(now.day).zfill(2)}"
 def main():
     parser = argparse.ArgumentParser(
         prog="post-upgrade",
-        description="Scripts to help with upgrading to a different major version of Ubuntu",
+        description="Updates your repository sources files",
     )
     parser.add_argument("prev_version_name", type=str)
 

@@ -16,7 +16,7 @@ today: str = f"{now.year}-{str(now.month).zfill(2)}-{str(now.day).zfill(2)}"
 def main():
     parser = argparse.ArgumentParser(
         prog="pre-upgrade",
-        description="Scripts to help with upgrading to a different major version of Ubuntu",
+        description="Gets a list of package repositories that may need updating after you upgrade",
     )
     parser.add_argument("new_version_name", type=str)
     parser.add_argument("--json", action="store_true")
