@@ -131,7 +131,7 @@ def update_sources_file(file: Path, version_name: str, new_version_name: str) ->
 def get_pkg_url(pkg_name: str) -> str | None:
     """Gets the repository URL of a package if it has one saved in its metadata"""
     policy_res: subprocess.CompletedProcess = subprocess.run(
-        [f"apt-cache policy {pkg_name}"],
+        [f"apt policy {pkg_name}"],
         check=True,
         shell=True,
         capture_output=True,
