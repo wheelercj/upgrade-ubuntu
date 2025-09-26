@@ -2,11 +2,8 @@ import argparse
 import json
 import re
 import subprocess
-import sys
 from datetime import datetime
 from pathlib import Path
-
-from utils import get_current_version_name
 
 
 now = datetime.now()
@@ -18,21 +15,10 @@ def main():
         prog="pre-upgrade",
         description="Gets a list of package repositories that may need updating after you upgrade",
     )
-    parser.add_argument("new_version_name", type=str)
     parser.add_argument("--json", action="store_true")
 
     args = parser.parse_args()
-    new_version_name: str = args.new_version_name
     is_json: bool = args.json
-
-    if " " in new_version_name:
-        print('Error: enter only the first part of the new version\'s name, such as "noble"')
-        sys.exit(1)
-
-    version_name: str = get_current_version_name()
-    if version_name == new_version_name:
-        print("Error: enter the name of the version you will change to, not the current version")
-        sys.exit(1)
 
     if not is_json:
         print("Getting a list of the manually installed packages")
