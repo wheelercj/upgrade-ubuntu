@@ -29,11 +29,10 @@ def main():
         print("Error: enter the name of the version you upgraded from, not the current version")
         sys.exit(1)
 
-    print("Getting source repositories")
+    print("Updating sources files")
     srcs_list: Path = Path("/etc/apt/sources.list")
     srcs_list_d: Path = Path("/etc/apt/sources.list.d/")
 
-    print("Updating sources files")
     update_sources_file(srcs_list, version_name, prev_version_name)
     for path in srcs_list_d.iterdir():
         if path.is_file():
