@@ -31,7 +31,7 @@ def main():
 
     version_name: str = get_current_version_name()
     if version_name == new_version_name:
-        print("Error: enter the name of the version to change to, not the current version")
+        print("Error: enter the name of the version you will change to, not the current version")
         sys.exit(1)
 
     if not is_json:
