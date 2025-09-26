@@ -140,9 +140,11 @@ def get_pkg_url(pkg_name: str) -> str | None:
     assert isinstance(policy_res.stdout, str)
     policy: list[str] = policy_res.stdout.strip().splitlines()
 
+    repo_pattern: re.Pattern = re.compile(r"^\s*\d+ (?P<url>https?://\S+).*")
     for line in policy:
-        if line.strip().startswith("500 http"):
-            return line.split()[1]
+        match: re.Match | None = repo_pattern.match(line)
+        if match:
+            return match["url"]
 
 
 if __name__ == "__main__":
