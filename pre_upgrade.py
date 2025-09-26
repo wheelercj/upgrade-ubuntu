@@ -1,4 +1,5 @@
 import argparse
+import json
 import re
 import subprocess
 import sys
@@ -18,9 +19,12 @@ def main():
         description="Scripts to help with upgrading to a different major version of Ubuntu",
     )
     parser.add_argument("new_version_name", type=str)
+    parser.add_argument("--json", action="store_true")
 
     args = parser.parse_args()
     new_version_name: str = args.new_version_name
+    is_json: bool = args.json
+
     if " " in new_version_name:
         print('Error: enter only the first part of the new version\'s name, such as "noble"')
         sys.exit(1)
@@ -54,9 +58,12 @@ def main():
             chosen_pkg_urls[pkg] = url
     print(f"Found {len(chosen_pkg_urls)} manually installed package repository URLs")
 
-    print()
-    for pkg, url in chosen_pkg_urls.items():
-        print(f"{pkg}:\n\t{url}")
+    if is_json:
+        print(json.dumps(chosen_pkg_urls))
+    else:
+        print()
+        for pkg, url in chosen_pkg_urls.items():
+            print(f"{pkg}:\n\t{url}")
 
 
 def index_apt_lists() -> dict[str, str]:
