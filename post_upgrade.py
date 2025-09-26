@@ -56,13 +56,15 @@ def update_sources_file(file: Path, version_name: str, prev_version_name: str) -
 
     # make a backup of the file
     backups_folder: Path = Path(file.parent / "backups")
-    backups_folder.mkdir(exist_ok=True)
+    backups_folder.mkdir(mode=0o755, exist_ok=True)
     backup: Path = backups_folder / f"{today}_{file.name}.bak"
+    backup.touch(mode=0o644, exist_ok=True)
     backup.write_text(contents, encoding="utf8")
     print(f"Backup of {file.name} created at {backup}")
 
     # create a temporary file with the new contents
     temp: Path = Path(f"{file}.tmp")
+    temp.touch(mode=0o644, exist_ok=True)
     temp.write_text(new_contents, encoding="utf8")
 
     # rename the temporary file to replace the original file
