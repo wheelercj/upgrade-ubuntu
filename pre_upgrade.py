@@ -129,7 +129,7 @@ def update_sources_file(file: Path, version_name: str, new_version_name: str) ->
 
 
 def get_pkg_url(pkg_name: str) -> str | None:
-    """Gets the repository URL of a package if it has one saved in its metadata"""
+    """Attempts to get the repository URL of a package"""
     policy_res: subprocess.CompletedProcess = subprocess.run(
         [f"apt policy {pkg_name}"],
         check=True,
@@ -145,6 +145,25 @@ def get_pkg_url(pkg_name: str) -> str | None:
         match: re.Match | None = repo_pattern.match(line)
         if match:
             return match["url"]
+
+    # the package's repository was not found using `apt policy`, so search /var/lib/apt/lists
+    for path in Path("/var/lib/apt/lists").iterdir():
+        if path.is_file():
+            lines: list[str] = path.read_text(encoding="utf8").splitlines()
+
+            i: int = 0
+            while i < len(lines) and lines[i] != f"Package: {pkg_name}":
+                i += 1
+            while i < len(lines) and not lines[i].startswith("Vcs-Browser: "):
+                if lines[i] == "":
+                    i = len(lines)
+                    break
+                i += 1
+            if i >= len(lines):
+                continue
+
+            url: str = lines[i].split()[1]
+            return url
 
 
 if __name__ == "__main__":
