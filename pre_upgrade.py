@@ -66,15 +66,21 @@ def main():
         if path.is_file():
             update_sources_file(path, version_name, new_version_name)
 
+    print("Indexing /var/lib/apt/lists")
+    apt_lists_pkg_urls: dict[str, str] = index_apt_lists()
+    print(f"Found {len(apt_lists_pkg_urls)} package repository URLs in /var/lib/apt/lists")
+
     print("Mapping manually installed packages to source repositories")
-    raise NotImplementedError
-    # TODO: figure out which source repository each manually installed package corresponds to.
-    # Maybe use the `get_pkg_url` function defined below.
+    chosen_pkg_urls: dict[str, str] = dict()
+    for pkg in manually_installed:
+        url: str | None = get_pkg_url(pkg, apt_lists_pkg_urls)
+        if url:
+            chosen_pkg_urls[pkg] = url
+    print(f"Found {len(chosen_pkg_urls)} manually installed package repository URLs")
 
-    # TODO: remove from the list of manually installed packages all packages that come from
-    # ubuntu.com.
-
-    # TODO: print the remaining packages and their URLs
+    print()
+    for pkg, url in chosen_pkg_urls.items():
+        print(f"{pkg}:\n\t{url}")
 
 
 def get_current_version_name() -> str:
