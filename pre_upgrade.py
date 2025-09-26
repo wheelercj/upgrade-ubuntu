@@ -128,8 +128,49 @@ def update_sources_file(file: Path, version_name: str, new_version_name: str) ->
     temp.replace(file)
 
 
-def get_pkg_url(pkg_name: str) -> str | None:
+def index_apt_lists() -> dict[str, str]:
+    """Maps package names to package repository URLs using the data in /var/lib/apt/lists"""
+    # creating this dictionary is important because some of the files in /var/lib/apt/lists are
+    # massive and take a long time to process
+    m: dict[str, str] = dict()
+
+    for path in Path("/var/lib/apt/lists").iterdir():
+        if not path.is_file():
+            continue
+
+        try:
+            lines: list[str] = path.read_text(encoding="utf8").splitlines()
+        except PermissionError:
+            continue
+
+        i: int = 0
+        while i < len(lines):
+            while i < len(lines) and not lines[i].startswith("Package: "):
+                i += 1
+            if i >= len(lines):
+                break
+            pkg_name: str = lines[i].split()[1]
+
+            no_url: bool = False
+            while i < len(lines) and not lines[i].startswith("Vcs-Browser: "):
+                if lines[i] == "":
+                    no_url = True
+                    break
+                i += 1
+            if no_url or i >= len(lines):
+                continue
+            pkg_url: str = lines[i].split()[1]
+
+            m[pkg_name] = pkg_url
+
+    return m
+
+
+def get_pkg_url(pkg_name: str, apt_lists_pkg_urls: dict[str, str]) -> str | None:
     """Attempts to get the repository URL of a package"""
+    if pkg_name in apt_lists_pkg_urls:
+        return apt_lists_pkg_urls[pkg_name]
+
     policy_res: subprocess.CompletedProcess = subprocess.run(
         [f"apt policy {pkg_name}"],
         check=True,
@@ -145,25 +186,6 @@ def get_pkg_url(pkg_name: str) -> str | None:
         match: re.Match | None = repo_pattern.match(line)
         if match:
             return match["url"]
-
-    # the package's repository was not found using `apt policy`, so search /var/lib/apt/lists
-    for path in Path("/var/lib/apt/lists").iterdir():
-        if path.is_file():
-            lines: list[str] = path.read_text(encoding="utf8").splitlines()
-
-            i: int = 0
-            while i < len(lines) and lines[i] != f"Package: {pkg_name}":
-                i += 1
-            while i < len(lines) and not lines[i].startswith("Vcs-Browser: "):
-                if lines[i] == "":
-                    i = len(lines)
-                    break
-                i += 1
-            if i >= len(lines):
-                continue
-
-            url: str = lines[i].split()[1]
-            return url
 
 
 if __name__ == "__main__":
