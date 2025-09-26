@@ -34,7 +34,8 @@ def main():
         print("Error: enter the name of the version to change to, not the current version")
         sys.exit(1)
 
-    print("Getting a list of the manually installed packages")
+    if not is_json:
+        print("Getting a list of the manually installed packages")
     showmanual_res: subprocess.CompletedProcess = subprocess.run(
         ["apt-mark showmanual"],
         check=True,
@@ -44,19 +45,24 @@ def main():
     )
     assert isinstance(showmanual_res.stdout, str), f"{type(showmanual_res.stdout).__name__ = }"
     manually_installed: list[str] = showmanual_res.stdout.strip().splitlines()
-    print(f"Found {len(manually_installed)} manually installed packages")
+    if not is_json:
+        print(f"Found {len(manually_installed)} manually installed packages")
 
-    print("Indexing /var/lib/apt/lists")
+    if not is_json:
+        print("Indexing /var/lib/apt/lists")
     apt_lists_pkg_urls: dict[str, str] = index_apt_lists()
-    print(f"Found {len(apt_lists_pkg_urls)} package repository URLs in /var/lib/apt/lists")
+    if not is_json:
+        print(f"Found {len(apt_lists_pkg_urls)} package repository URLs in /var/lib/apt/lists")
 
-    print("Mapping manually installed packages to source repositories")
+    if not is_json:
+        print("Mapping manually installed packages to source repositories")
     chosen_pkg_urls: dict[str, str] = dict()
     for pkg in manually_installed:
         url: str | None = get_pkg_url(pkg, apt_lists_pkg_urls)
         if url:
             chosen_pkg_urls[pkg] = url
-    print(f"Found {len(chosen_pkg_urls)} manually installed package repository URLs")
+    if not is_json:
+        print(f"Found {len(chosen_pkg_urls)} manually installed package repository URLs")
 
     if is_json:
         print(json.dumps(chosen_pkg_urls))
