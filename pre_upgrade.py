@@ -73,25 +73,31 @@ def index_apt_lists() -> dict[str, str]:
         except PermissionError:
             continue
 
-        i: int = 0
-        while i < len(lines):
-            while i < len(lines) and not lines[i].startswith("Package: "):
-                i += 1
-            if i >= len(lines):
-                break
-            pkg_name: str = lines[i].split()[1]
-
-            no_url: bool = False
-            while i < len(lines) and not lines[i].startswith("Vcs-Browser: "):
-                if lines[i] == "":
-                    no_url = True
-                    break
-                i += 1
-            if no_url or i >= len(lines):
+        pkg_name: str | None = None
+        for line in lines:
+            if line.startswith("Package: "):
+                pkg_name = line.split()[1]
                 continue
-            pkg_url: str = lines[i].split()[1]
+            elif line == "":
+                pkg_name = None
+                continue
+            elif not pkg_name:
+                continue
 
-            m[pkg_name] = pkg_url
+            tokens: list[str] = line.split()
+            if len(tokens) <= 1:
+                continue
+
+            key, value = tokens[0], tokens[1]
+
+            # Packages appear to be able to have up to three URLs: homepage, repository URL, and
+            # Git URL. Prefer the repository URL, but use either of the others if available.
+            match key:
+                case "Vcs-Browser:":
+                    m[pkg_name] = value
+                case "Homepage:" | "Vcs-Git:":
+                    if pkg_name not in m:
+                        m[pkg_name] = value
 
     return m
 
