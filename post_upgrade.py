@@ -63,11 +63,7 @@ def update_sources_file(file: Path, version_name: str, prev_version_name: str) -
             "Error: permission denied. Run this script with sudo. You may need to use the full"
             " path of the executable, such as"
         )
-        print(f"\tsudo /home/chris/.local/bin/uv run post_upgrade.py {prev_version_name}")
-        print(
-            "You can find the full path of whichever executable you're using to run Python by"
-            " using `which`, such as `which uv`."
-        )
+        print(f"\tsudo {sys.executable} {sys.argv[0]} {prev_version_name}")
         sys.exit(1)
     backup: Path = backups_folder / f"{today}_{file.name}.bak"
     backup.touch(mode=0o644, exist_ok=True)
