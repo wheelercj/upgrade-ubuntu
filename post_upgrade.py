@@ -63,7 +63,7 @@ def update_sources_file(file: Path, version_name: str, prev_version_name: str) -
             "Error: permission denied. Run this script with sudo. You may need to use the full"
             " path of the executable, such as"
         )
-        print("\tsudo /home/chris/.local/bin/uv post_upgrade.py jammy")
+        print("\tsudo /home/chris/.local/bin/uv run post_upgrade.py jammy")
         print(
             "You can find the full path of whichever executable you're using to run Python by"
             " using `which`, such as `which uv`."
