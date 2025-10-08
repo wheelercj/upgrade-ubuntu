@@ -56,7 +56,19 @@ def update_sources_file(file: Path, version_name: str, prev_version_name: str) -
 
     # make a backup of the file
     backups_folder: Path = Path(file.parent / "backups")
-    backups_folder.mkdir(mode=0o755, exist_ok=True)
+    try:
+        backups_folder.mkdir(mode=0o755, exist_ok=True)
+    except PermissionError:
+        print(
+            "Error: permission denied. Run this script with sudo. You may need to use the full"
+            " path of the executable, such as"
+        )
+        print("\tsudo /home/chris/.local/bin/uv post_upgrade.py jammy")
+        print(
+            "You can find the full path of whichever executable you're using to run Python by"
+            " using `which`, such as `which uv`."
+        )
+        sys.exit(1)
     backup: Path = backups_folder / f"{today}_{file.name}.bak"
     backup.touch(mode=0o644, exist_ok=True)
     backup.write_text(contents, encoding="utf8")
