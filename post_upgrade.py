@@ -64,6 +64,8 @@ def update_sources_file(file: Path, version_name: str, prev_version_name: str) -
             " path of the executable, such as"
         )
         print(f"\tsudo {sys.executable} {sys.argv[0]} {prev_version_name}")
+        if not sys.executable:
+            raise ValueError("expected sys.executable to be a non-empty string")
         sys.exit(1)
     backup: Path = backups_folder / f"{today}_{file.name}.bak"
     backup.touch(mode=0o644, exist_ok=True)
