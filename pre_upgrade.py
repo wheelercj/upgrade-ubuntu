@@ -65,7 +65,11 @@ def index_apt_lists() -> dict[str, str]:
     m: dict[str, str] = dict()
 
     for path in Path("/var/lib/apt/lists").iterdir():
-        if not path.is_file():
+        if (
+            not path.is_file()
+            or "_" not in path.name
+            or path.name.split("_")[-1] not in ("Packages", "Sources")
+        ):
             continue
 
         try:
