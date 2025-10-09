@@ -61,11 +61,10 @@ def update_sources_file(file: Path, version_name: str, prev_version_name: str) -
     except PermissionError:
         print(
             "Error: permission denied. Run this script with sudo. You may need to use the full"
-            " path of the executable, such as"
+            " path of the executable"
         )
-        print(f"\tsudo {sys.executable} {sys.argv[0]} {prev_version_name}")
-        if not sys.executable:
-            raise ValueError("expected sys.executable to be a non-empty string")
+        if sys.executable and sys.argv[0]:
+            print(f"\tsudo {sys.executable} {sys.argv[0]} {prev_version_name}")
         sys.exit(1)
     backup: Path = backups_folder / f"{today}_{file.name}.bak"
     backup.touch(mode=0o644, exist_ok=True)
