@@ -8,6 +8,6 @@ Scripts to help with upgrading to a different major version of Ubuntu.
 When you will upgrade to a new major version of Ubuntu, follow these steps:
 
 1. Run `python3 pre_upgrade.py` and save its output for later.
-2. Upgrade to the new version of Ubuntu.
+2. [Upgrade to the new version of Ubuntu](https://ubuntu.com/tutorials/upgrading-ubuntu-desktop#1-before-you-start).
 3. Run `python3 post_upgrade.py` to make sure the repository sources files are upgraded. Use the name of the version you upgraded from, such as "jammy" in `python3 post_upgrade.py jammy`.
 4. Read the previously saved output of `python3 pre_upgrade.py` and figure out if anything needs to be done with it. Some packages may not work correctly until you uninstall and reinstall them.
