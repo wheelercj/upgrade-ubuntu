@@ -72,7 +72,7 @@ def update_sources_file(file: Path, version_name: str, prev_version_name: str) -
     print(f"Backup of {file.name} created at {backup}")
 
     # create a temporary file with the new contents
-    temp: Path = Path(f"{file}.tmp")
+    temp: Path = file.parent / f"{file}.tmp"
     temp.touch(mode=0o644, exist_ok=True)
     temp.write_text(new_contents, encoding="utf8")
 
