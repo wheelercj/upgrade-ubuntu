@@ -23,9 +23,8 @@ def main():
     if not is_json:
         print("Getting a list of the manually installed packages")
     showmanual_res: subprocess.CompletedProcess = subprocess.run(
-        ["apt-mark showmanual"],
+        ["apt-mark", "showmanual"],
         check=True,
-        shell=True,
         capture_output=True,
         text=True,
     )
@@ -112,9 +111,8 @@ def get_pkg_url(pkg_name: str, apt_lists_pkg_urls: dict[str, str]) -> str | None
         return apt_lists_pkg_urls[pkg_name]
 
     policy_res: subprocess.CompletedProcess = subprocess.run(
-        [f"apt policy {pkg_name}"],
+        ["apt", "policy", pkg_name],
         check=True,
-        shell=True,
         capture_output=True,
         text=True,
     )
