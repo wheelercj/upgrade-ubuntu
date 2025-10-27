@@ -21,12 +21,18 @@ def main():
     args = parser.parse_args()
     prev_version_name: str = args.prev_version_name
     if " " in prev_version_name:
-        print('Error: enter only the first part of the new version\'s name, such as "jammy"')
+        print(
+            'Error: enter only the first part of the new version\'s name, such as "jammy"',
+            file=sys.stderr,
+        )
         sys.exit(1)
 
     version_name: str = get_current_version_name()
     if version_name == prev_version_name:
-        print("Error: enter the name of the version you upgraded from, not the current version")
+        print(
+            "Error: enter the name of the version you upgraded from, not the current version",
+            file=sys.stderr,
+        )
         sys.exit(1)
 
     print("Updating sources files")
@@ -61,7 +67,8 @@ def update_sources_file(file: Path, version_name: str, prev_version_name: str) -
     except PermissionError:
         print(
             "Error: permission denied. Run this script with sudo. You may need to use the full"
-            " path of the executable"
+            " path of the executable",
+            file=sys.stderr,
         )
         if sys.executable and sys.argv[0]:
             print(f"\tsudo {sys.executable} {sys.argv[0]} {prev_version_name}")

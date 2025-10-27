@@ -1,6 +1,6 @@
 [project]
 name = "upgrade-ubuntu"
-version = "0.1.1"
+version = "0.1.2"
 description = "Scripts to help with upgrading to a different major version of Ubuntu"
 readme = "README.md"
 requires-python = ">=3.13"
