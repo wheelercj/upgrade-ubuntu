@@ -71,7 +71,7 @@ def update_sources_file(file: Path, version_name: str, prev_version_name: str) -
             file=sys.stderr,
         )
         if sys.executable and sys.argv[0]:
-            print(f"\tsudo {sys.executable} {sys.argv[0]} {prev_version_name}")
+            print(f"\tsudo {sys.executable} {sys.argv[0]} {prev_version_name}", file=sys.stderr)
         sys.exit(1)
     backup: Path = backups_folder / f"{today}_{file.name}.bak"
     backup.touch(mode=0o644, exist_ok=True)
