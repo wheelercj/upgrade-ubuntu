@@ -7,7 +7,9 @@ requires-python = ">=3.10"
 dependencies = []
 
 [dependency-groups]
-dev = ["ruff>=0.13.2"]
+dev = [
+    "ruff>=0.16.9",
+]
 
 # Configuring Ruff: https://docs.astral.sh/ruff/configuration/
 [tool.ruff] # https://docs.astral.sh/ruff/settings/
